@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.squareup.sqldelight'
 }
 
 android {
@@ -58,4 +59,21 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+
+    implementation "com.squareup.sqldelight:android-driver:1.5.3"
+    implementation "com.squareup.sqldelight:coroutines-extensions-jvm:1.5.3"
+    //coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2"
+
+    implementation "androidx.navigation:navigation-compose:2.4.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.4.0"
+}
+sqldelight {
+    BillDataBase {
+        packageName = "io.liaojie1314.datastorage.db"
+        schemaOutputDirectory = file("src/main/sqldelight/io/liaojie1314/datastorage/db")
+        verifyMigrations = true
+    }
+    linkSqlite = false
 }

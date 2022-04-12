@@ -1,0 +1,20 @@
+CREATE TABLE bills(
+ id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+ type INTEGER NOT NULL,
+ typename TEXT NOT NULL,
+ cost TEXT NOT NULL,
+ time TEXT NOT NULL
+);
+
+getAllBills:
+SELECT * FROM bills;
+
+insertBill:
+INSERT OR IGNORE INTO bills(id,type,typename,cost,time)
+VALUES (:id,:type,:typename,:cost,:time);
+
+updateBillById:
+UPDATE bills SET type=:type,typename=:typename,cost=:cost,time=:time WHERE id=:id;
+
+deleteBillById:
+DELETE FROM bills WHERE id=:id;
