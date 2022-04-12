@@ -105,6 +105,16 @@ fun BillItem(navController: NavController, billViewModel: BillViewModel, bills: 
                     color = Color(0xFFFE343D)
                 )
             }
+            IconButton(onClick = {
+                val favorite = if ((bills.favorite ?: 0) == 0L) 1L else 0
+                billViewModel.setupFavority(favorite, bills.id)
+            }) {
+                Icon(
+                    Icons.Default.Favorite,
+                    contentDescription = "",
+                    tint = if ((bills.favorite ?: 0) == 0L) Color.LightGray else Color.Red
+                )
+            }
         }
     }
 }

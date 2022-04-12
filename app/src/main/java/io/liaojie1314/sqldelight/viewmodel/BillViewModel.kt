@@ -8,6 +8,12 @@ import kotlinx.coroutines.launch
 
 class BillViewModel(private val repository:BillRepository):ViewModel() {
     val bills=repository.getAllBill()
+
+    fun setupFavority(favorite:Long,id:Long){
+        viewModelScope.launch {
+            repository.setupFavorite(favorite, id)
+        }
+    }
     //add Bill
     fun addBill(id: Long?, type: Long, typename: String, cost: String, time: String) {
         viewModelScope.launch {

@@ -12,6 +12,12 @@ import kotlinx.coroutines.withContext
 class BillRepository(sqlDriver: SqlDriver) {
     private val dbRef: BillDataBase = BillDataBase(sqlDriver)
 
+    suspend fun setupFavorite(favorite: Long, id: Long) {
+        withContext(Dispatchers.IO) {
+            dbRef.billTableQueries.setupFavorite(favorite, id)
+        }
+    }
+
     fun getAllBill(): Flow<List<Bills>> {
         return dbRef.billTableQueries.getAllBills().asFlow().mapToList()
     }

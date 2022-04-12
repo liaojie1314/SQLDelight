@@ -3,8 +3,12 @@ CREATE TABLE bills(
  type INTEGER NOT NULL,
  typename TEXT NOT NULL,
  cost TEXT NOT NULL,
- time TEXT NOT NULL
+ time TEXT NOT NULL,
+ favorite INTEGER
 );
+
+setupFavorite:
+UPDATE bills SET favorite = :favorite WHERE id=:id;
 
 getAllBills:
 SELECT * FROM bills;

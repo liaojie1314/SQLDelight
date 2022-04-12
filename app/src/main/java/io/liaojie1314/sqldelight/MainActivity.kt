@@ -109,12 +109,14 @@ class MainActivity : ComponentActivity() {
                                 val type = it.arguments?.getLong("type") ?: 0
                                 val typename = it.arguments?.getString("typename") ?: "出行"
                                 val cost = it.arguments?.getString("cost") ?: ""
+
                                 val bill = Bills(
                                     id = id,
                                     type = type,
                                     typename = typename,
                                     cost = cost,
                                     time = "",
+                                    favorite = 0
                                 )
                                 ComposeDialog(navController, context, billViewModel, bill)
                             }
