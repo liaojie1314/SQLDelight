@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import io.liaojie1314.datastorage.db.Bills
+import io.liaojie1314.sqldelight.model.BillTypeVals
 import io.liaojie1314.sqldelight.viewmodel.BillViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,12 +36,16 @@ fun ComposeDialog(
     billViewModel: BillViewModel,
     bill: Bills
 ) {
-    val radioOptions = listOf("出行", "餐饮", "理财")
+    val radioOptions = listOf(
+        BillTypeVals.BillType.traffic,
+        BillTypeVals.BillType.food,
+        BillTypeVals.BillType.money
+    )
     val cost = remember {
         mutableStateOf(bill.cost)
     }
     val (selectedOption, onOptionSelected) = remember {
-        mutableStateOf(radioOptions[bill.type.toInt()])
+        mutableStateOf(radioOptions[bill.type])
     }
     AlertDialog(
         onDismissRequest = { navController.popBackStack() },
@@ -79,7 +84,14 @@ fun ComposeDialog(
                                     selected = text == selectedOption,
                                     onClick = { onOptionSelected(text) })
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text(text = text)
+                                Text(
+                                    text = when (text) {
+                                        BillTypeVals.BillType.traffic -> "出行"
+                                        BillTypeVals.BillType.food -> "餐饮"
+                                        BillTypeVals.BillType.money -> "理财"
+                                        else -> "出行"
+                                    }
+                                )
                             }
                         }
                     }
@@ -138,18 +150,19 @@ fun ComposeDialog(
                         } else {
                             val data = SimpleDateFormat("HH:mm")
                             val strData = data.format(Date())
-                            if (bill.id == -1L){
+                            if (bill.id == -1L) {
                                 billViewModel.addBill(
                                     id = null,
-                                    type = radioOptions.indexOf(selectedOption).toLong(),
+                                    type = radioOptions.indexOf(selectedOption),
                                     typename = selectedOption,
                                     cost = cost.value,
-                                    time = strData
+                                    time = strData,
+                                    favorite = bill.favorite
                                 )
-                            }else{
+                            } else {
                                 billViewModel.updateBill(
                                     id = bill.id,
-                                    type = radioOptions.indexOf(selectedOption).toLong(),
+                                    type = radioOptions.indexOf(selectedOption),
                                     typename = selectedOption,
                                     cost = cost.value,
                                     time = strData

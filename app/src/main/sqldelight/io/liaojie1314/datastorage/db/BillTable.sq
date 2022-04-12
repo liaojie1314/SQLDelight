@@ -1,10 +1,12 @@
+import io.liaojie1314.sqldelight.model.BillTypeVals;
+
 CREATE TABLE bills(
  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
- type INTEGER NOT NULL,
- typename TEXT NOT NULL,
+ type INTEGER AS Int NOT NULL,
+ typename TEXT AS BillTypeVals.BillType NOT NULL,
  cost TEXT NOT NULL,
  time TEXT NOT NULL,
- favorite INTEGER
+ favorite INTEGER AS Boolean NOT NULL DEFAULT 0
 );
 
 setupFavorite:
@@ -14,8 +16,8 @@ getAllBills:
 SELECT * FROM bills;
 
 insertBill:
-INSERT OR IGNORE INTO bills(id,type,typename,cost,time)
-VALUES (:id,:type,:typename,:cost,:time);
+INSERT OR IGNORE INTO bills(id,type,typename,cost,time,favorite)
+VALUES (:id,:type,:typename,:cost,:time,:favorite);
 
 updateBillById:
 UPDATE bills SET type=:type,typename=:typename,cost=:cost,time=:time WHERE id=:id;

@@ -51,7 +51,7 @@ fun BillItem(navController: NavController, billViewModel: BillViewModel, bills: 
             .combinedClickable(
                 onClick = {
                     navController.navigate(
-                        "dialog?id=${bills.id},type=${bills.type},typename=${bills.typename},cost=${bills.cost}"
+                        "dialog?id=${bills.id},type=${bills.type},typename=${bills.typename.name},cost=${bills.cost}"
                     )
                 },
                 onLongClick = {
@@ -72,9 +72,9 @@ fun BillItem(navController: NavController, billViewModel: BillViewModel, bills: 
         ) {
             Image(
                 painter = when (bills.type) {
-                    0L -> painterResource(id = R.mipmap.ic_type_01)
-                    1L -> painterResource(id = R.mipmap.ic_type_03)
-                    2L -> painterResource(id = R.mipmap.ic_type_02)
+                    0 -> painterResource(id = R.mipmap.ic_type_01)
+                    1 -> painterResource(id = R.mipmap.ic_type_03)
+                    2 -> painterResource(id = R.mipmap.ic_type_02)
                     else -> painterResource(id = R.mipmap.ic_type_01)
                 },
                 contentDescription = "",
@@ -88,11 +88,18 @@ fun BillItem(navController: NavController, billViewModel: BillViewModel, bills: 
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(text = bills.typename, style = MaterialTheme.typography.h6)
+                Text(
+                    text = when (bills.typename.name) {
+                        "traffic" -> "出行"
+                        "food" -> "餐饮"
+                        "money" -> "理财"
+                        else -> "出行"
+                    }, style = MaterialTheme.typography.h6
+                )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(text = bills.time, color = Color.Gray)
             }
-            if (bills.type == 2L) {
+            if (bills.type == 2) {
                 Text(
                     text = "+${bills.cost}$",
                     style = MaterialTheme.typography.h6,
@@ -106,13 +113,13 @@ fun BillItem(navController: NavController, billViewModel: BillViewModel, bills: 
                 )
             }
             IconButton(onClick = {
-                val favorite = if ((bills.favorite ?: 0) == 0L) 1L else 0
+                val favorite = if (bills.favorite ?: false) false else true
                 billViewModel.setupFavority(favorite, bills.id)
             }) {
                 Icon(
                     Icons.Default.Favorite,
                     contentDescription = "",
-                    tint = if ((bills.favorite ?: 0) == 0L) Color.LightGray else Color.Red
+                    tint = if (bills.favorite ?: false) Color.Red else Color.LightGray
                 )
             }
         }

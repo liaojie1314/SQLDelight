@@ -1,18 +1,23 @@
 package io.liaojie1314.sqldelight.repository
 
+import com.squareup.sqldelight.EnumColumnAdapter
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
 import io.liaojie1314.datastorage.db.BillDataBase
 import io.liaojie1314.datastorage.db.Bills
+import io.liaojie1314.sqldelight.model.BillTypeVals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class BillRepository(sqlDriver: SqlDriver) {
-    private val dbRef: BillDataBase = BillDataBase(sqlDriver)
+    private val dbRef: BillDataBase = BillDataBase(sqlDriver,
+    billsAdapter = Bills.Adapter(
+        typenameAdapter = EnumColumnAdapter()
+    ))
 
-    suspend fun setupFavorite(favorite: Long, id: Long) {
+    suspend fun setupFavorite(favorite: Boolean, id: Long) {
         withContext(Dispatchers.IO) {
             dbRef.billTableQueries.setupFavorite(favorite, id)
         }
@@ -22,13 +27,13 @@ class BillRepository(sqlDriver: SqlDriver) {
         return dbRef.billTableQueries.getAllBills().asFlow().mapToList()
     }
 
-    suspend fun insertBill(id: Long?, type: Long, typeName: String, cost: String, time: String) {
+    suspend fun insertBill(id: Long?, type: Int, typeName: BillTypeVals.BillType, cost: String, time: String,favorite: Boolean) {
         withContext(Dispatchers.IO) {
-            dbRef.billTableQueries.insertBill(id, type, typeName, cost, time)
+            dbRef.billTableQueries.insertBill(id, type, typeName, cost, time,favorite)
         }
     }
 
-    suspend fun updateBillById(id: Long, type: Long, typeName: String, cost: String, time: String) {
+    suspend fun updateBillById(id: Long, type: Int, typeName: BillTypeVals.BillType, cost: String, time: String) {
         withContext(Dispatchers.IO) {
             dbRef.billTableQueries.updateBillById(type, typeName, cost, time, id)
         }

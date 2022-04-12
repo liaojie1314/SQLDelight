@@ -20,6 +20,7 @@ import androidx.navigation.navArgument
 import com.squareup.sqldelight.android.AndroidSqliteDriver
 import io.liaojie1314.datastorage.db.BillDataBase
 import io.liaojie1314.datastorage.db.Bills
+import io.liaojie1314.sqldelight.model.BillTypeVals
 import io.liaojie1314.sqldelight.repository.BillRepository
 import io.liaojie1314.sqldelight.ui.theme.SQLDelightTheme
 import io.liaojie1314.sqldelight.viewmodel.BillViewModel
@@ -92,12 +93,12 @@ class MainActivity : ComponentActivity() {
                                         defaultValue = -1L
                                     },
                                     navArgument("type") {
-                                        type = NavType.LongType
+                                        type = NavType.IntType
                                         defaultValue = 0
                                     },
                                     navArgument("typename") {
                                         type = NavType.StringType
-                                        defaultValue = "出行"
+                                        defaultValue = "traffic"
                                     },
                                     navArgument("cost") {
                                         type = NavType.StringType
@@ -106,17 +107,22 @@ class MainActivity : ComponentActivity() {
                                 )
                             ) {
                                 val id = it.arguments?.getLong("id") ?: -1L
-                                val type = it.arguments?.getLong("type") ?: 0
-                                val typename = it.arguments?.getString("typename") ?: "出行"
+                                val type = it.arguments?.getInt("type") ?: 0
+                                val typename = it.arguments?.getString("typename") ?: "traffic"
                                 val cost = it.arguments?.getString("cost") ?: ""
 
                                 val bill = Bills(
                                     id = id,
                                     type = type,
-                                    typename = typename,
+                                    typename = when (typename) {
+                                        "traffic" -> BillTypeVals.BillType.traffic
+                                        "food" -> BillTypeVals.BillType.food
+                                        "money" -> BillTypeVals.BillType.money
+                                        else -> BillTypeVals.BillType.traffic
+                                    },
                                     cost = cost,
                                     time = "",
-                                    favorite = 0
+                                    favorite = false
                                 )
                                 ComposeDialog(navController, context, billViewModel, bill)
                             }
