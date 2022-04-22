@@ -1,6 +1,8 @@
 package io.liaojie1314.sqldelight.repository
 
+import androidx.paging.PagingSource
 import com.squareup.sqldelight.EnumColumnAdapter
+import com.squareup.sqldelight.android.paging3.QueryPagingSource
 import com.squareup.sqldelight.db.SqlDriver
 import com.squareup.sqldelight.runtime.coroutines.asFlow
 import com.squareup.sqldelight.runtime.coroutines.mapToList
@@ -16,6 +18,15 @@ class BillRepository(sqlDriver: SqlDriver) {
     billsAdapter = Bills.Adapter(
         typenameAdapter = EnumColumnAdapter()
     ))
+
+    fun allBills():PagingSource<Long,Bills>{
+        return QueryPagingSource(
+            countQuery = dbRef.billTableQueries.billcount(),
+            transacter = dbRef.billTableQueries,
+            dispatcher = Dispatchers.IO,
+            queryProvider = dbRef.billTableQueries::allBills
+        )
+    }
 
     suspend fun setupFavorite(favorite: Boolean, id: Long) {
         withContext(Dispatchers.IO) {

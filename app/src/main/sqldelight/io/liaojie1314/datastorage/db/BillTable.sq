@@ -15,6 +15,12 @@ UPDATE bills SET favorite = :favorite WHERE id=:id;
 getAllBills:
 SELECT * FROM bills;
 
+allBills:
+SELECT * FROM bills LIMIT :limit OFFSET :offset;
+
+billcount:
+SELECT count(*) FROM bills;
+
 insertBill:
 INSERT OR IGNORE INTO bills(id,type,typename,cost,time,favorite)
 VALUES (:id,:type,:typename,:cost,:time,:favorite);

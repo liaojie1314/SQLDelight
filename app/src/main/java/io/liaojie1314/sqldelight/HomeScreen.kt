@@ -18,6 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.items
 import io.liaojie1314.datastorage.db.Bills
 import io.liaojie1314.sqldelight.viewmodel.BillViewModel
 
@@ -25,6 +28,7 @@ import io.liaojie1314.sqldelight.viewmodel.BillViewModel
 @Composable
 fun HomeScreen(navController: NavController, billViewModel: BillViewModel) {
     val bills = billViewModel.bills.collectAsState(initial = emptyList()).value
+    val billlistItem = billViewModel.billlist.collectAsLazyPagingItems()
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -38,7 +42,50 @@ fun HomeScreen(navController: NavController, billViewModel: BillViewModel) {
             items(bills) { bills ->
                 BillItem(navController, billViewModel, bills)
             }
+//            items(
+//                items = billlistItem,
+//                key = { item: Bills ->
+//                    item.id
+//                }
+//            ) { bills ->
+//                bills?.let {
+//                    BillItem(navController, billViewModel, it)
+//                }
+//            }
         }
+
+//        billlistItem.apply {
+//            when {
+//                loadState.refresh is LoadState.Loading -> {
+//                    LoadUI()
+//                }
+//                loadState.append is LoadState.Loading -> {
+//                    LoadUI()
+//                }
+//                loadState.prepend is LoadState.Loading -> {
+//                    LoadUI()
+//                }
+//            }
+//        }
+    }
+}
+
+@Composable
+fun LoadUI() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(6.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CircularProgressIndicator(
+            color = Color.Red,
+            strokeWidth = 2.dp,
+            modifier = Modifier.size(22.dp)
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text = "Loading...")
     }
 }
 

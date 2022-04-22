@@ -3,32 +3,58 @@ package io.liaojie1314.sqldelight.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import io.liaojie1314.datastorage.db.Bills
 import io.liaojie1314.sqldelight.model.BillTypeVals
 import io.liaojie1314.sqldelight.repository.BillRepository
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class BillViewModel(private val repository:BillRepository):ViewModel() {
-    val bills=repository.getAllBill()
+class BillViewModel(private val repository: BillRepository) : ViewModel() {
+    val bills = repository.getAllBill()
 
-    fun setupFavority(favorite:Boolean,id:Long){
+    val billlist: Flow<PagingData<Bills>> = Pager(PagingConfig(20, 20)) {
+        repository.allBills()
+    }.flow.cachedIn(viewModelScope)
+
+    fun setupFavority(favorite: Boolean, id: Long) {
         viewModelScope.launch {
             repository.setupFavorite(favorite, id)
         }
     }
+
     //add Bill
-    fun addBill(id: Long?, type: Int, typename: BillTypeVals.BillType, cost: String, time: String,favorite:Boolean) {
+    fun addBill(
+        id: Long?,
+        type: Int,
+        typename: BillTypeVals.BillType,
+        cost: String,
+        time: String,
+        favorite: Boolean
+    ) {
         viewModelScope.launch {
-            repository.insertBill(id, type, typename, cost, time,favorite)
+            repository.insertBill(id, type, typename, cost, time, favorite)
         }
     }
+
     //update Bill
-    fun updateBill(id: Long,type: Int,typename: BillTypeVals.BillType,cost: String,time: String){
+    fun updateBill(
+        id: Long,
+        type: Int,
+        typename: BillTypeVals.BillType,
+        cost: String,
+        time: String
+    ) {
         viewModelScope.launch {
             repository.updateBillById(id, type, typename, cost, time)
         }
     }
+
     //delete Bill
-    fun deleteBillById(id: Long){
+    fun deleteBillById(id: Long) {
         viewModelScope.launch {
             repository.deleteBillById(id)
         }
